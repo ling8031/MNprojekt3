@@ -1,4 +1,0 @@
-- znaleźć 3 trasy
-- zaimplementować metode wykrzystujaca wielomian interpolacyjny Lagranga'e
-- zaimplementować metode wykorzystujaca funkcje sklejane trzeciego stopnia
-- sporządzić sprawozdanie

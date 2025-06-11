@@ -1,0 +1,433 @@
+% !TEX root = sprawozdanie.tex
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage{indentfirst}
+
+\title{Analiza interpolacji wielomianowej i funkcjami sklejanymi \\ -- Projekt 3 --}
+\author{Maciej Jabłonowski 198030}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Wstęp}
+
+Celem projektu była analiza metod interpolacji danych pomiarowych reprezentujących profil wysokościowy trasy. W szczególności skupiono się na dwóch podejściach: interpolacji wielomianowej metodą Lagrange’a oraz interpolacji funkcjami sklejanymi (spline’ami) naturalnymi kubicznymi.
+
+Interpolacja wielomianowa jest klasyczną techniką aproksymacji funkcji, polegającą na znalezieniu wielomianu przechodzącego przez zadane punkty. Metoda Lagrange’a umożliwia konstrukcję takiego wielomianu bez rozwiązywania układów równań. Wielomian Lagrange’a dla danych \\ $(x_0, y_0), (x_1, y_1), \dots, (x_n, y_n)$ ma postać:
+
+\begin{equation}
+L(x) = \sum_{i=0}^{n} y_i \cdot \ell_i(x), \quad
+\ell_i(x) = \prod_{\substack{j=0 \\ j \ne i}}^{n} \frac{x - x_j}{x_i - x_j}
+\end{equation}
+
+Jednak interpolacja wielomianowa może być podatna na oscylacje, zwłaszcza przy dużej liczbie węzłów lub nierównomiernym ich rozmieszczeniu (tzw. zjawisko Rungego).
+
+Interpolacja funkcjami sklejanymi polega na łączeniu wielomianów niskiego stopnia w podprzedziałach, przy czym wymuszane są warunki gładkości na styku tych podprzedziałów. Spline naturalny kubiczny jest szczególnie popularny ze względu na dobrą jakość aproksymacji i stabilność numeryczną. Dla każdego przedziału $[x_i, x_{i+1}]$ funkcja interpolująca ma postać:
+\begin{equation}
+S_i(x) = a_i + b_i(x - x_i) + c_i(x - x_i)^2 + d_i(x - x_i)^3
+\end{equation}
+Zakładamy również, że:
+\begin{equation}
+S_i'(x_{i+1}) = S_{i+1}'(x_{i+1})
+\end{equation}
+\begin{equation}
+S_i''(x_{i+1}) = S_{i+1}''(x_{i+1})
+\end{equation}
+\begin{equation}
+S_1''(x_1) = 0
+\end{equation}
+\begin{equation}
+S_{n-1}''(x_n) = 0
+\end{equation}
+
+W pracy przeprowadzono analizę wpływu liczby węzłów na jakość interpolacji oraz dodatkowo zbadano wpływ rozmieszczenia węzłów (równomierne vs. Czebyszewa) na interpolację wielomianową. Węzły Czebyszewa drugiego rodzaju w przedziale $[a, b]$ są definiowane jako:
+\begin{equation}
+x_k = \frac{a + b}{2} + \frac{b - a}{2} \cos\left( \frac{(k - 1)\pi}{(N - 1)} \right), \quad k = 1, 2, \dots, N
+\end{equation}
+
+Rozmieszczenie takie pozwala zredukować efekt oscylacji na krańcach przedziału, poprawiając dokładność interpolacji wielomianowej.
+\section{Analiza podstawowa pierwszej trasy}
+\subsection{Interpolacja wielomianowa}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_5.png}
+        \caption{5 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_10.png}
+        \caption{10 węzłów}
+    \end{subfigure}
+    
+    \vspace{1em}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_15.png}
+        \caption{15 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_20.png}
+        \caption{20 węzłów}
+    \end{subfigure}
+    
+    \caption{Interpolacja metodą Lagrange’a – trasa 1}
+\end{figure}
+
+
+\subsection{Interpolacja funkcjami sklejanymi}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_spline_5.png}
+        \caption{5 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_spline_10.png}
+        \caption{10 węzłów}
+    \end{subfigure}
+    
+    \vspace{1em}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_spline_15.png}
+        \caption{15 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_spline_20.png}
+        \caption{20 węzłów}
+    \end{subfigure}
+    
+    \caption{Interpolacja funkcjami sklejanymi – trasa 1}
+\end{figure}
+
+\subsection{Wnioski}
+Zwiększanie liczby węzłów do pewnego momentu daje zadowalające rezultaty - funkcja interpolująca jest lepiej dopasowana, ale niestety ma to ogromną wadę - coraz większe oscylacje na krańcach przedziału (efekt Rungego). Wykres (d) dla 20 węzłów nie jest możliwy do odczytania, przez to jak duże wartości są osiągane przez wspomniane oscylacje. Dla interpolacji funkcjami sklejanymi jednak, efekt jest odmienny - przy zwiększaniu liczby węzłów funkcja coraz lepiej odwzorowuje tę rzeczywistą, nie widać żadnych skutków ubocznych.
+
+
+\section{Analiza podstawowa drugiej trasy}
+\subsection{Interpolacja wielomianowa}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_5.png}
+        \caption{5 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_10.png}
+        \caption{10 węzłów}
+    \end{subfigure}
+
+    \vspace{1em}
+
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_15.png}
+        \caption{15 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_20.png}
+        \caption{20 węzłów}
+    \end{subfigure}
+
+    \caption{Interpolacja metodą Lagrange’a – trasa 2}
+\end{figure}
+
+
+\subsection{Interpolacja funkcjami sklejanymi}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_spline_5.png}
+        \caption{5 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_spline_10.png}
+        \caption{10 węzłów}
+    \end{subfigure}
+
+    \vspace{1em}
+
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_spline_15.png}
+        \caption{15 węzłów}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_spline_20.png}
+        \caption{20 węzłów}
+    \end{subfigure}
+
+    \caption{Interpolacja funkcjami sklejanymi – trasa 2}
+\end{figure}
+\subsection{Wnioski}
+Na przykładzie drugiej trasy widać jak charakter funkcji ma może mieć znaczenie na skuteczność analizowanych metod. Jest tu wiele gwałtownych zmian wysokości, przez co funkcja musi być bardziej dopasowana, aby ten charakter odwzorowywać. Jest konieczne zastosowanie większej ilości węzłów, co nie sprzyja metodzie Lagrange'a i już dla 10 węzłów oscylacje sprawiają, że wykres jest nieczytelny - wartość oscylacji kilkukrotnie przewyższa wartość maksymalną interpolowanych danych. Za to metoda splajnów radzi sobie świetnie.
+
+
+\section{Analiza podstawowa trzeciej trasy}
+\subsection{Interpolacja wielomianowa}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_5.png}
+        \caption{Interpolacja metodą Lagrange’a, 5 węzłów – trasa 3.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_10.png}
+        \caption{Interpolacja metodą Lagrange’a, 10 węzłów – trasa 3.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_15.png}
+        \caption{Interpolacja metodą Lagrange’a, 15 węzłów – trasa 3.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_20.png}
+        \caption{Interpolacja metodą Lagrange’a, 20 węzłów – trasa 3.}
+    \end{subfigure}
+\end{figure}
+
+\subsection{Interpolacja funkcjami sklejanymi}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_spline_5.png}
+        \caption{Interpolacja funkcjami sklejanymi, 5 węzłów – trasa 3.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_spline_10.png}
+        \caption{Interpolacja funkcjami sklejanymi, 10 węzłów – trasa 3.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_spline_15.png}
+        \caption{Interpolacja funkcjami sklejanymi, 15 węzłów – trasa 3.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_spline_20.png}
+        \caption{Interpolacja funkcjami sklejanymi, 20 węzłów – trasa 3.}
+    \end{subfigure}
+\end{figure}
+\subsection{Wnioski}
+Trzecia trasa również zawiera duże wahania wartości i metoda funkcji sklejanych znowu osiąga lepsze rezultaty, niż Lagrange'a.
+
+\section{Analiza podstawowa czwartej trasy}
+\subsection{Interpolacja wielomianowa}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_5.png}
+        \caption{Interpolacja metodą Lagrange’a, 5 węzłów – trasa 4.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_10.png}
+        \caption{Interpolacja metodą Lagrange’a, 10 węzłów – trasa 4.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_15.png}
+        \caption{Interpolacja metodą Lagrange’a, 15 węzłów – trasa 4.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_20.png}
+        \caption{Interpolacja metodą Lagrange’a, 20 węzłów – trasa 4.}
+    \end{subfigure}
+\end{figure}
+
+\subsection{Interpolacja funkcjami sklejanymi}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_spline_5.png}
+        \caption{Interpolacja funkcjami sklejanymi, 5 węzłów – trasa 4.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_spline_10.png}
+        \caption{Interpolacja funkcjami sklejanymi, 10 węzłów – trasa 4.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_spline_15.png}
+        \caption{Interpolacja funkcjami sklejanymi, 15 węzłów – trasa 4.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_spline_20.png}
+        \caption{Interpolacja funkcjami sklejanymi, 20 węzłów – trasa 4.}
+    \end{subfigure}
+\end{figure}
+\subsection{Wnioski}
+Na płaskiej trasie widać, że interpolacja wielomianowa radzi sobie całkiem dobrze, dla małej ilości węzłów, a oscylacje osiągają niższe wartości, niż dla tras o bardziej zmiennym charakterze. Mimo to metoda splajnów znowu daje lepsze rezultaty.
+
+\section{Analiza dodatkowa interpolacji - zastosowanie węzłów Czebyszewa}
+
+\subsubsection{Trasa 1}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_chebyshev2_10.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 10 węzłów – trasa 1.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_chebyshev2_15.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 15 węzłów – trasa 1.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_chebyshev2_20.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 20 węzłów – trasa 1.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa1_jedno_wzniesienie_lagrange_chebyshev2_25.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 25 węzłów – trasa 1.}
+    \end{subfigure}
+\end{figure}
+
+\subsubsection{Trasa 2}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_chebyshev2_10.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 10 węzłów – trasa 2.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_chebyshev2_15.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 15 węzłów – trasa 2.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_chebyshev2_20.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 20 węzłów – trasa 2.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa2_wiele_wzniesien_lagrange_chebyshev2_25.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 25 węzłów – trasa 2.}
+    \end{subfigure}
+\end{figure}
+
+\subsubsection{Trasa 3}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_chebyshev2_10.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 10 węzłów – trasa 3.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_chebyshev2_15.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 15 węzłów – trasa 3.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_chebyshev2_20.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 20 węzłów – trasa 3.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa3_wiele_wzniesien_lagrange_chebyshev2_25.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 25 węzłów – trasa 3.}
+    \end{subfigure}
+\end{figure}
+
+\subsubsection{Trasa 4}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_chebyshev2_10.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 10 węzłów – trasa 4.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_chebyshev2_15.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 15 węzłów – trasa 4.}
+    \end{subfigure}
+    
+    \vspace{0.5cm}
+    
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_chebyshev2_20.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 20 węzłów – trasa 4.}
+    \end{subfigure}\hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{./analiza_wykresy/trasa4_plasko_lagrange_chebyshev2_25.png}
+        \caption{Interpolacja Lagrange z węzłami Czebyszewa, 25 węzłów – trasa 4.}
+    \end{subfigure}
+\end{figure}
+\subsection{Wnioski}
+Dzięki zastosowaniu węzłów Czebyszewa drugiego rodzaju, dla każdej trasy widać wyraźną poprawę - efekt Rungego jest zniwelowany. Ma to jednak swój minus - jeżeli funkcja gwałtownie zmienia wartości w środkowej części dziedziny, to przez umiejscowienie tam mniejszej ilości węzłów interpolacja będzie mniej dokladna.
+
+\section{Podsumowanie i wnioski}
+
+Interpolacja wielomianowa metodą Lagrange’a dla niewielkiej liczby węzłów daje dobre przybliżenia, jednak zwiększanie liczby węzłów prowadzi do powstawania znacznych oscylacji na krańcach przedziału (efekt Rungego), co może całkowicie zniekształcić wynik. Problem ten jest szczególnie widoczny dla danych o gwałtownie zmieniającym się przebiegu, gdzie już przy umiarkowanej liczbie węzłów pojawiają się bardzo duże błędy.
+
+Zastosowanie węzłów Czebyszewa drugiego rodzaju pozwala znacząco ograniczyć te oscylacje, co poprawia jakość interpolacji niezależnie od charakteru danych.
+
+Interpolacja funkcjami sklejanymi (splajnami) okazała się natomiast metodą bardziej stabilną i odporną na wzrost liczby węzłów. Niezależnie od charakteru funkcji (zarówno dla tras o łagodnym, jak i gwałtownym przebiegu), metoda ta zapewnia dobrą jakość dopasowania i brak widocznych efektów ubocznych.
+
+W efekcie, funkcje sklejane można uznać za bardziej uniwersalne i niezawodne narzędzie interpolacyjne, szczególnie w kontekście danych rzeczywistych o zróżnicowanej charakterystyce.
+
+\end{document}
